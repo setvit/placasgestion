@@ -1,0 +1,487 @@
+-- phpMyAdmin SQL Dump
+-- version 4.4.15.10
+-- https://www.phpmyadmin.net
+--
+-- Servidor: localhost
+-- Tiempo de generación: 22-03-2023 a las 15:08:19
+-- Versión del servidor: 5.5.68-MariaDB
+-- Versión de PHP: 7.3.28
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Base de datos: `placas_mancomunidad`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `auth_assignment`
+--
+
+CREATE TABLE IF NOT EXISTS `auth_assignment` (
+  `item_name` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `user_id` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `auth_assignment`
+--
+
+INSERT INTO `auth_assignment` (`item_name`, `user_id`, `created_at`) VALUES
+('actualizar-placas', '1', NULL),
+('crear-placas', '1', NULL),
+('ver-gestores', '1', NULL),
+('ver-placas', '1', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `auth_item`
+--
+
+CREATE TABLE IF NOT EXISTS `auth_item` (
+  `name` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `type` smallint(6) NOT NULL,
+  `description` text COLLATE utf8_unicode_ci,
+  `rule_name` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `data` blob,
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `auth_item`
+--
+
+INSERT INTO `auth_item` (`name`, `type`, `description`, `rule_name`, `data`, `created_at`, `updated_at`) VALUES
+('actualizar-placas', 1, 'Permite al usuario actualizar placas', NULL, NULL, NULL, NULL),
+('borrar-placas', 1, 'Permite al usuario borrar placas', NULL, NULL, NULL, NULL),
+('crear-gestores', 1, 'Permite al usuario crear gestores', NULL, NULL, NULL, NULL),
+('crear-placas', 1, 'Permite al usuario crear placas', NULL, NULL, NULL, NULL),
+('ver-gestores', 1, 'Permite al usuario ver los gestores', NULL, NULL, NULL, NULL),
+('ver-placas', 1, 'Permite al usuario ver las placas', NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `auth_item_child`
+--
+
+CREATE TABLE IF NOT EXISTS `auth_item_child` (
+  `parent` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `child` varchar(64) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `auth_rule`
+--
+
+CREATE TABLE IF NOT EXISTS `auth_rule` (
+  `name` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `data` blob,
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `migration`
+--
+
+CREATE TABLE IF NOT EXISTS `migration` (
+  `version` varchar(180) NOT NULL,
+  `apply_time` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `migration`
+--
+
+INSERT INTO `migration` (`version`, `apply_time`) VALUES
+('m000000_000000_base', 1588263867),
+('m140506_102106_rbac_init', 1588264290),
+('m170907_052038_rbac_add_index_on_auth_assignment_user_id', 1588264290),
+('m180523_151638_rbac_updates_indexes_without_prefix', 1588264291);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tab_agencias`
+--
+
+CREATE TABLE IF NOT EXISTS `tab_agencias` (
+  `id_agencia` int(11) NOT NULL COMMENT 'Id de cada agencia',
+  `descripcion_agencia` varchar(250) NOT NULL COMMENT 'Nombre de la agencia'
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `tab_agencias`
+--
+
+INSERT INTO `tab_agencias` (`id_agencia`, `descripcion_agencia`) VALUES
+(1, 'IBARRA'),
+(2, 'SAN GABRIEL'),
+(3, 'OTAVALO');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tab_clase_automotor`
+--
+
+CREATE TABLE IF NOT EXISTS `tab_clase_automotor` (
+  `id_clase` int(11) NOT NULL COMMENT 'Identificador de la clase del automotor',
+  `descripcion_clase` varchar(500) NOT NULL COMMENT 'Descripción de la clase del automotor y placa'
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `tab_clase_automotor`
+--
+
+INSERT INTO `tab_clase_automotor` (`id_clase`, `descripcion_clase`) VALUES
+(1, 'JEEP'),
+(2, 'LIVIANO'),
+(3, 'PESADO');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tab_gestores`
+--
+
+CREATE TABLE IF NOT EXISTS `tab_gestores` (
+  `id_gestor` int(11) NOT NULL COMMENT 'Identificador unico para gestores de da placas en la mancomunidad',
+  `cedula_gestor` char(10) NOT NULL COMMENT 'Numero de cedula unico de cada gestor, no puede repetirse',
+  `nombres_gestor` varchar(200) NOT NULL COMMENT 'Nombres del Gestor',
+  `apellidos_gestor` varchar(200) NOT NULL COMMENT 'Apellidos del gestor',
+  `casa_comercial` varchar(500) NOT NULL COMMENT 'Nombre de la casa comercial a la que representa el gestor',
+  `celular` char(10) NOT NULL COMMENT 'NUmero de celular del gestor con el cual se le pueda contactar',
+  `correo` varchar(100) NOT NULL COMMENT 'Correo electronico institucional del gestor',
+  `fotografia_gestor` longblob COMMENT 'Campo que almacena la foto del gestor'
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Tabla que almacena datos de gestores calificados por la EPM';
+
+--
+-- Volcado de datos para la tabla `tab_gestores`
+--
+
+INSERT INTO `tab_gestores` (`id_gestor`, `cedula_gestor`, `nombres_gestor`, `apellidos_gestor`, `casa_comercial`, `celular`, `correo`, `fotografia_gestor`) VALUES
+(1, '1003869730', 'EDUARDO STALIN', 'TUSA VITAR', 'COMERCIAL HIDROBO', '0988337648', 'stalintusa@movidelnor.gob.ec', '');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tab_gestores_placas`
+--
+
+CREATE TABLE IF NOT EXISTS `tab_gestores_placas` (
+  `id_placas_gestores` int(10) NOT NULL,
+  `tab_gestores_id_gestor` int(11) NOT NULL COMMENT 'clave foranea del id del gestor',
+  `tab_placas_id_placa` int(11) NOT NULL COMMENT 'Clave foranea del id de la placa'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tab_placas`
+--
+
+CREATE TABLE IF NOT EXISTS `tab_placas` (
+  `id_placa` int(11) NOT NULL,
+  `placa` varchar(7) NOT NULL COMMENT 'Placa del automotor',
+  `id_servicio` int(11) NOT NULL COMMENT 'Identificador de el tipo de servicio',
+  `id_clase` int(11) NOT NULL COMMENT 'Descripción de la clase del automotor y placa',
+  `id_agencia` int(11) NOT NULL COMMENT 'Id Agencia',
+  `fecha_llegada` date DEFAULT NULL COMMENT 'Fecha en que la placa es entregada a la EPM desde la ANT y se registra en el sistema',
+  `fecha_registro_sistema` datetime NOT NULL COMMENT 'Fecha en la que se ingresa en el sistema',
+  `fecha_entrega_usuario` date DEFAULT NULL COMMENT 'Fecha en la que se entregó la placa al usuario',
+  `disponibilidad_placa` char(100) NOT NULL COMMENT 'Indica si la placa está disponible para ser retirada',
+  `observacion` varchar(500) NOT NULL DEFAULT 'En fabricación' COMMENT 'Observacion de la placa del reporte del sistema Axis, donde se verifica el estado en que se encuentra la placa, puede ser ninguna o en fabricación',
+  `estanteria` char(5) DEFAULT NULL COMMENT 'Numero de estanteria donde se encuentra la placa que se pretende ingresar al sistema',
+  `estado_entrega` char(2) NOT NULL DEFAULT 'NO' COMMENT 'Estado en el que esta la placa, puede ser si o no',
+  `fecha_entrega_sistema` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Fecha real en la que se realiza la actualización en el sistema de la entrega de placas',
+  `tipo_persona_entrega` varchar(250) NOT NULL COMMENT 'Tipo de persona a la que se entrega la placa, particular o gestor',
+  `nombre_persona_entrega` varchar(250) NOT NULL COMMENT 'Nombre de la persona que retira la placa sea gestor o particular.',
+  `usuario_ingreso` varchar(250) NOT NULL COMMENT 'Nombre de usuario que ingresa la placa al sistema',
+  `usuario_entrega` varchar(250) DEFAULT NULL COMMENT 'Usuario que entrega la placa y cambia de estado a la misma',
+  `estado_placa` int(11) NOT NULL DEFAULT '0' COMMENT 'Estado de la placa, cero (0) significa que no está entregada y uno (1) significa que ya fue entregada',
+  `orden_axis` char(10) DEFAULT NULL COMMENT 'Numero de orden del sistema axis cloud',
+  `tramite_axis` char(10) DEFAULT NULL COMMENT 'Numero de tramite sacado del sistema Axis.'
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COMMENT='Tabla que almacena placas, fechas de entrega.';
+
+--
+-- Volcado de datos para la tabla `tab_placas`
+--
+
+INSERT INTO `tab_placas` (`id_placa`, `placa`, `id_servicio`, `id_clase`, `id_agencia`, `fecha_llegada`, `fecha_registro_sistema`, `fecha_entrega_usuario`, `disponibilidad_placa`, `observacion`, `estanteria`, `estado_entrega`, `fecha_entrega_sistema`, `tipo_persona_entrega`, `nombre_persona_entrega`, `usuario_ingreso`, `usuario_entrega`, `estado_placa`, `orden_axis`, `tramite_axis`) VALUES
+(4, 'PPS0023', 1, 1, 1, '0000-00-00', '2020-04-27 23:04:40', '2020-04-30', 'Entregada', 'NINGUNA', 'AE12', 'SI', '2020-04-30 17:04:41', 'Por Definir', 'Por Definir', 'stalin', 'stalin', 1, '1234567', '1234567'),
+(5, 'PPS0021', 1, 1, 1, '2020-04-26', '2020-04-30 14:04:39', '2020-04-30', 'Entregada', 'NINGUNA', 'AE12', 'SI', '2020-04-30 19:04:39', 'Por Definir', 'Por Definir', 'stalin', 'stalin', 1, '1234567', '1234567'),
+(6, 'PPS0026', 1, 1, 1, '2020-04-27', '2020-04-30 18:04:51', '2020-04-30', 'Entregada', 'NINGUNA', 'AIB12', 'SI', '2020-04-30 23:04:51', 'PARTICULAR', 'EDUARDO STALIN TUSA VITAR', 'stalin', 'stalin', 1, '1234567890', '3456789098'),
+(7, 'PPS0027', 1, 1, 1, '2020-04-27', '2020-04-27 23:04:19', NULL, 'Disponible', 'NINGUNA', 'AIB12', 'NO', '2020-04-27 23:18:23', 'Por Definir', 'Por Definir', 'stalin', 'stalin', 0, '', ''),
+(8, 'PPS3456', 1, 1, 1, '2020-04-27', '2020-04-27 23:04:27', NULL, 'Disponible', 'NINGUNA', 'AIB9', 'NO', '2020-04-27 23:15:12', 'Por Definir', 'Por Definir', 'stalin', NULL, 0, '', ''),
+(9, 'PPS3456', 1, 1, 1, '2020-04-30', '2020-04-30 12:04:18', NULL, 'Disponible', 'NINGUNA', 'AIB9', 'NO', '2020-04-30 17:50:54', 'Por Definir', 'Por Definir', 'stalin', NULL, 0, '4567890987', '5678909876'),
+(10, 'hs56457', 1, 1, 1, '2020-04-30', '2020-04-30 17:04:24', NULL, 'Disponible', 'NINGUNA', 'AIB9', 'NO', '2020-04-30 22:19:40', 'Por Definir', 'Por Definir', 'stalin', NULL, 0, '4567890987', '5678909876'),
+(11, 'IBB2345', 1, 1, 2, '2020-04-30', '2020-04-30 17:04:48', NULL, 'Disponible', 'NINGUNA', 'AIB9', 'NO', '2020-04-30 22:20:06', 'Por Definir', 'Por Definir', 'stalin', NULL, 0, '4567890987', '5678909876'),
+(12, 'IBB4857', 2, 2, 2, '2020-04-29', '2020-04-30 17:04:22', NULL, 'Disponible', 'NINGUNA', 'AIB9', 'NO', '2020-04-30 22:20:38', 'Por Definir', 'Por Definir', 'stalin', NULL, 0, '4567890987', '5678909876'),
+(13, 'KSS6E54', 1, 1, 2, '2020-04-30', '2020-04-30 17:04:02', NULL, 'Disponible', 'NINGUNA', 'AIB9', 'NO', '2020-04-30 22:41:19', 'Por Definir', 'Por Definir', 'stalin', NULL, 0, '4567890987', '5678909876'),
+(14, 'PPS3456', 1, 1, 1, '2020-04-30', '2020-04-30 18:04:20', NULL, 'Disponible', 'NINGUNA', 'AIB9', 'NO', '2020-04-30 23:02:31', 'Por Definir', 'Por Definir', 'stalin', NULL, 0, '4567890987', '5678909876'),
+(15, 'PPS3456', 1, 1, 1, NULL, '2020-05-04 13:05:36', NULL, 'Disponible', 'NINGUNA', 'AIB9', 'NO', '2020-05-04 18:11:08', 'Por Definir', 'Por Definir', 'stalin', NULL, 0, '4567890987', '5678909876'),
+(16, 'PPS3456', 1, 2, 1, '2020-05-04', '2020-05-04 13:05:44', NULL, 'Disponible', 'NINGUNA', 'AIB9', 'NO', '2020-05-04 18:17:19', 'Por Definir', 'Por Definir', 'stalin', NULL, 0, '4567890987', '5678909876'),
+(17, 'PPS0025', 2, 2, 1, '2020-05-10', '2121-01-21 09:01:31', '2021-01-21', 'Entregada', 'NINGUNA', 'AE1', 'SI', '0000-00-00 00:00:00', 'Por Definir', 'Por Definir', 'stalin', 'stalin', 1, '', '');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tab_placas_fabaxis`
+--
+
+CREATE TABLE IF NOT EXISTS `tab_placas_fabaxis` (
+  `id_placafab` int(11) NOT NULL COMMENT 'Id de la placa en fabricacion',
+  `numero_orden` char(10) DEFAULT NULL,
+  `numero_tramite` char(10) DEFAULT NULL,
+  `tipo_vehiculo` varchar(200) DEFAULT NULL,
+  `servicio_anterior` varchar(250) DEFAULT NULL,
+  `servicio_actual` varchar(250) DEFAULT NULL,
+  `fecha_solicitada` date DEFAULT NULL,
+  `estado_axis` varchar(45) DEFAULT NULL,
+  `observacion_axis` varchar(500) DEFAULT NULL,
+  `placa_axis` char(8) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tab_tipo_servicio`
+--
+
+CREATE TABLE IF NOT EXISTS `tab_tipo_servicio` (
+  `id_servicio` int(11) NOT NULL COMMENT 'Identificador de el tipo de servicio',
+  `descripcion_servicio` varchar(500) NOT NULL COMMENT 'Descripción del tipo de servicio del vehiculo y placa'
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `tab_tipo_servicio`
+--
+
+INSERT INTO `tab_tipo_servicio` (`id_servicio`, `descripcion_servicio`) VALUES
+(1, 'PUBLICO'),
+(2, 'PARTICULAR');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `user`
+--
+
+CREATE TABLE IF NOT EXISTS `user` (
+  `id` int(11) NOT NULL,
+  `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `auth_key` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `password_hash` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `password_reset_token` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `status` smallint(6) NOT NULL DEFAULT '10',
+  `created_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL,
+  `verification_token` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `user`
+--
+
+INSERT INTO `user` (`id`, `username`, `auth_key`, `password_hash`, `password_reset_token`, `email`, `status`, `created_at`, `updated_at`, `verification_token`) VALUES
+(1, 'stalin', 'HtE6aKi-oewxR0l_zak-UkgbzMivi_Nb', '$2y$13$eauXXIfx2rJl.Hu22MEysOIbxHiP8hVoZOnqWFA4VegCXCG81USdm', NULL, 'stalintusa@movidelnor.gob.ec', 10, 1587136688, 1588006044, 'WtoR9SL00l5YzjP9GhXQxxjpqi5SG47h_1587136688'),
+(2, 'dtorres', '', '', 'JC16Uq2aIYWZ3_piYOxUG7foU02_gi4q_1679506571', 'dtorres@movidelnor.gob.ec', 10, 22032023, 1679506571, NULL);
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `auth_assignment`
+--
+ALTER TABLE `auth_assignment`
+  ADD PRIMARY KEY (`item_name`,`user_id`),
+  ADD KEY `idx-auth_assignment-user_id` (`user_id`);
+
+--
+-- Indices de la tabla `auth_item`
+--
+ALTER TABLE `auth_item`
+  ADD PRIMARY KEY (`name`),
+  ADD KEY `rule_name` (`rule_name`),
+  ADD KEY `idx-auth_item-type` (`type`);
+
+--
+-- Indices de la tabla `auth_item_child`
+--
+ALTER TABLE `auth_item_child`
+  ADD PRIMARY KEY (`parent`,`child`),
+  ADD KEY `child` (`child`);
+
+--
+-- Indices de la tabla `auth_rule`
+--
+ALTER TABLE `auth_rule`
+  ADD PRIMARY KEY (`name`);
+
+--
+-- Indices de la tabla `migration`
+--
+ALTER TABLE `migration`
+  ADD PRIMARY KEY (`version`);
+
+--
+-- Indices de la tabla `tab_agencias`
+--
+ALTER TABLE `tab_agencias`
+  ADD PRIMARY KEY (`id_agencia`);
+
+--
+-- Indices de la tabla `tab_clase_automotor`
+--
+ALTER TABLE `tab_clase_automotor`
+  ADD PRIMARY KEY (`id_clase`);
+
+--
+-- Indices de la tabla `tab_gestores`
+--
+ALTER TABLE `tab_gestores`
+  ADD PRIMARY KEY (`id_gestor`),
+  ADD UNIQUE KEY `unique_cedula_gestor` (`cedula_gestor`);
+
+--
+-- Indices de la tabla `tab_gestores_placas`
+--
+ALTER TABLE `tab_gestores_placas`
+  ADD PRIMARY KEY (`id_placas_gestores`),
+  ADD KEY `fk_tab_gestores_has_tab_placas_tab_placas1_idx` (`tab_placas_id_placa`),
+  ADD KEY `fk_tab_gestores_has_tab_placas_tab_gestores_idx` (`tab_gestores_id_gestor`);
+
+--
+-- Indices de la tabla `tab_placas`
+--
+ALTER TABLE `tab_placas`
+  ADD PRIMARY KEY (`id_placa`),
+  ADD KEY `id_servicio` (`id_servicio`),
+  ADD KEY `id_clase` (`id_clase`),
+  ADD KEY `id_agencia` (`id_agencia`);
+
+--
+-- Indices de la tabla `tab_placas_fabaxis`
+--
+ALTER TABLE `tab_placas_fabaxis`
+  ADD PRIMARY KEY (`id_placafab`);
+
+--
+-- Indices de la tabla `tab_tipo_servicio`
+--
+ALTER TABLE `tab_tipo_servicio`
+  ADD PRIMARY KEY (`id_servicio`);
+
+--
+-- Indices de la tabla `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `password_reset_token` (`password_reset_token`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `tab_agencias`
+--
+ALTER TABLE `tab_agencias`
+  MODIFY `id_agencia` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Id de cada agencia',AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT de la tabla `tab_clase_automotor`
+--
+ALTER TABLE `tab_clase_automotor`
+  MODIFY `id_clase` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador de la clase del automotor',AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT de la tabla `tab_gestores`
+--
+ALTER TABLE `tab_gestores`
+  MODIFY `id_gestor` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico para gestores de da placas en la mancomunidad',AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT de la tabla `tab_gestores_placas`
+--
+ALTER TABLE `tab_gestores_placas`
+  MODIFY `id_placas_gestores` int(10) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT de la tabla `tab_placas`
+--
+ALTER TABLE `tab_placas`
+  MODIFY `id_placa` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=18;
+--
+-- AUTO_INCREMENT de la tabla `tab_placas_fabaxis`
+--
+ALTER TABLE `tab_placas_fabaxis`
+  MODIFY `id_placafab` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Id de la placa en fabricacion';
+--
+-- AUTO_INCREMENT de la tabla `tab_tipo_servicio`
+--
+ALTER TABLE `tab_tipo_servicio`
+  MODIFY `id_servicio` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador de el tipo de servicio',AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT de la tabla `user`
+--
+ALTER TABLE `user`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `auth_assignment`
+--
+ALTER TABLE `auth_assignment`
+  ADD CONSTRAINT `auth_assignment_ibfk_1` FOREIGN KEY (`item_name`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `auth_item`
+--
+ALTER TABLE `auth_item`
+  ADD CONSTRAINT `auth_item_ibfk_1` FOREIGN KEY (`rule_name`) REFERENCES `auth_rule` (`name`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `auth_item_child`
+--
+ALTER TABLE `auth_item_child`
+  ADD CONSTRAINT `auth_item_child_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `auth_item_child_ibfk_2` FOREIGN KEY (`child`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `tab_gestores_placas`
+--
+ALTER TABLE `tab_gestores_placas`
+  ADD CONSTRAINT `fk_tab_gestores_has_tab_placas_tab_gestores` FOREIGN KEY (`tab_gestores_id_gestor`) REFERENCES `tab_gestores` (`id_gestor`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tab_gestores_has_tab_placas_tab_placas1` FOREIGN KEY (`tab_placas_id_placa`) REFERENCES `tab_placas` (`id_placa`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `tab_placas`
+--
+ALTER TABLE `tab_placas`
+  ADD CONSTRAINT `tab_placas_ibfk_1` FOREIGN KEY (`id_servicio`) REFERENCES `tab_tipo_servicio` (`id_servicio`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `tab_placas_ibfk_2` FOREIGN KEY (`id_clase`) REFERENCES `tab_clase_automotor` (`id_clase`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `tab_placas_ibfk_3` FOREIGN KEY (`id_agencia`) REFERENCES `tab_agencias` (`id_agencia`) ON UPDATE CASCADE;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
