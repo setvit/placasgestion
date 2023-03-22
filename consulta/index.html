@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	<script src="http://cdn.jsdelivr.net/webshim/1.12.4/extras/modernizr-custom.js"></script>
+  <!-- polyfiller file to detect and load polyfills -->
+  <script src="http://cdn.jsdelivr.net/webshim/1.12.4/polyfiller.js"></script>
+  <script>
+    webshims.setOptions('waitReady', false);
+    webshims.setOptions('forms-ext', {types: 'date'});
+    webshims.polyfill('forms forms-ext');
+  </script>
+  <script type="text/javascript">
+var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+
+elems.forEach(function(html) {
+  var switchery = new Switchery(html);
+});
+</script>
+  <script>
+    $(function(){           
+        if (!Modernizr.inputtypes.date) {
+        // If not native HTML5 support, fallback to jQuery datePicker
+            $('input[type=date]').datepicker({
+                // Consistent format with the HTML5 picker
+                    dateFormat : 'yy-mm-dd'
+                },
+                // Localization
+                $.datepicker.regional['it']
+            );
+        }
+    });
+</script>
+  <script type="text/javascript">
+			if(history.forward(1)){
+				location.replace( history.forward(1) );
+			}
+   </script>
+	<script type="text/javascript">
+		function validateForm() {
+		    var x = document.forms["inscripcion"]["nombres"].value;
+		    if (x == null || x == "") {
+		        alert("Debe llenar este campo");
+		        return false;
+		    }
+		}
+	</script>
+		<meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <title>Consulta de placas - EPM</title>
+        <meta name="description" content="Custom Login Form Styling with CSS3" />
+        <meta name="keywords" content="css3, login, form, custom, input, submit, button, html5, placeholder" />
+        <meta name="author" content="Codrops" />
+        <link rel="shortcut icon" href="../favicon.ico"> 
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+		<script>
+		function validarSiNumero(numero){
+    if (!/^([0-9])*$/.test(numero))
+      alert("El valor " + numero + " no es un número");
+  }
+		</script>
+		<script src="js/modernizr.custom.63321.js"></script>
+		<!--[if lte IE 7]><style>.main{display:none;} .support-note .note-ie{display:block;}</style><![endif]-->
+    </head>
+    <body>
+        <div class="container">		
+			<header>
+			
+				<h1>Empresa Pública de Movilidad del Norte</h1>
+				<h1>Consulta de estado de Placas - EPM</h1>
+				
+				<div class="support-note">
+					<span class="note-ie">Lo sentimos, tu navegador esta desactualizado.</span>
+				</div>
+				
+			</header>
+			
+			<section class="main">
+				<form class="form-1" name ="inscripcion" action="consulta.php" method="post" onsubmit="return validateForm()">
+						<h1>Digite la placa</h1></br>
+						<p class="field">
+							<input type="text" name="numplaca" style="text-transform:uppercase;" value="" onkeyup="javascript:this.value=this.value.toUpperCase()" placeholder="Ingrese su placa aqui" required maxlength="7">
+							<i class="icon-lock icon-large"></i>
+					</p>
+					<p class="submit">
+						<button type="submit" name="submit"><i class="icon-arrow-right icon-large"></i></button>
+					</p>
+				</form>
+
+
+			</section>
+			<nav class="codrops-demos">
+					<a class="current-demo" href="http://www.movidelnor.gob.ec/">Ir a nuestro sitio web</a>
+			</nav>
+        </div>
+        
+    </body>
+</html>
